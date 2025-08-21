@@ -74,6 +74,9 @@ int init_raid(enum RAID_TYPE raid){
 
   if(Raid.exists == 1) return -1;
 
+  uint64* nule;
+
+
   switch(raid){
 
     case RAID0: 
@@ -98,11 +101,27 @@ int init_raid(enum RAID_TYPE raid){
 
       if(DISKS < 3) return -1;
 
+      nule = kalloc();
+
+      for(int i = 0; i * 8 < BSIZE; i++)nule[i] = 0;
+
+      for( int i = 1; i <= DISKS; i++) for( int j = 0; j < DISK_SIZE / BSIZE; j++) write_block(i,0,(uchar*)nule);
+          
+      kfree(nule);
+
       break;
 
     case RAID5: 
 
       if(DISKS < 3) return -1;
+
+      nule = kalloc();
+
+      for(int i = 0; i * 8 < BSIZE; i++)nule[i] = 0;
+
+      for( int i = 1; i <= DISKS; i++) for( int j = 0; j < DISK_SIZE / BSIZE; j++) write_block(i,0,(uchar*)nule);
+
+      kfree(nule);
 
       break;
   }
